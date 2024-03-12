@@ -1,0 +1,23 @@
+---
+
+- hosts: all 
+  gather_facts: no
+  vars:
+      ansible_connection: ansible.netcommon.network_cli
+      ansible_network_os: routeros
+  tasks:
+    - name: Disable LoRaWAN Device
+      community.routeros.command:
+        commands: "/lora disable numbers=0"
+
+    - name: Create LoRaWAN Serves
+      community.routeros.command:
+        commands: "/lora servers add name {{ name }} address {{ network_server }} up-port {{ lora_uport }} down-port {{ lora_dport }}"
+
+    - name: Add LoRaWAN Network Server
+      community.routeros.command:
+        commands: "/lora set servers={{ name }} numbers=0"
+
+    - name: Enable LoRaWAN Device
+      community.routeros.command:
+        commands: "/lora enable numbers=0"
